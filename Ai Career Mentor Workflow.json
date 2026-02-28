@@ -1,0 +1,776 @@
+{
+  "name": "My workflow 3",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "You are a career mentor helping a confused college student.\n\nYou MUST reply ONLY in valid JSON.\nNo explanations.\nNo text outside JSON.\nNo markdown.\nNo backticks.\n\nReturn this exact structure:\n\n{\n  \"field\": \"\",\n  \"nextSkill\": \"\",\n  \"todayTask\": \"\",\n  \"reply\": \"\"\n}\n\nIf you output anything outside JSON, the system will fail."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        208,
+        0
+      ],
+      "id": "6952ba08-20e4-4403-9866-d8bd718717ee",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": "magistral-small-latest",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatMistralCloud",
+      "typeVersion": 1,
+      "position": [
+        208,
+        224
+      ],
+      "id": "84b59447-663a-4df1-8e3a-7235d87f98d8",
+      "name": "Mistral Cloud Chat Model",
+      "credentials": {
+        "mistralCloudApi": {
+          "id": "SibT3x0Glg7daFid",
+          "name": "Mistral Cloud account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "=fromInput",
+        "sessionKey": ""
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        304,
+        256
+      ],
+      "id": "77d28268-7b58-460b-b49f-cfeb9aa96d9d",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "1d81f77a-4251-4e82-94c2-3fe974f8dba4",
+              "name": "sessionId",
+              "value": "={{$json.sessionId}}",
+              "type": "string"
+            },
+            {
+              "id": "96f522c0-c4f2-48a7-ac43-c0aaa61c22f8",
+              "name": "Date",
+              "value": "={{$now}}",
+              "type": "string"
+            },
+            {
+              "id": "ec39572f-915f-47d5-b6d3-5b0563166b35",
+              "name": "reply",
+              "value": "={{$json.reply}}",
+              "type": "string"
+            },
+            {
+              "id": "b6fd8dc7-58e7-46cb-ab69-e17d86164ae6",
+              "name": "field",
+              "value": "={{$json.field}}",
+              "type": "string"
+            },
+            {
+              "id": "9aafa68b-afa0-4318-8abf-8e65d67e19fa",
+              "name": "milestone",
+              "value": "\"\"",
+              "type": "string"
+            },
+            {
+              "id": "f5f8340a-1189-4ffd-a941-aeb337a733cd",
+              "name": "nextSkill",
+              "value": "={{$json.nextSkill}}",
+              "type": "string"
+            },
+            {
+              "id": "b26e5c57-e2dc-4a30-acda-5b97dc0e115b",
+              "name": "todayTask",
+              "value": "={{$json.todayTask}}",
+              "type": "string"
+            },
+            {
+              "id": "859abaab-fcc4-4a46-a8a0-8e8154c7e6d1",
+              "name": "status",
+              "value": "pending",
+              "type": "string"
+            },
+            {
+              "id": "296fb9a7-34a9-447c-beab-851ec7fcee92",
+              "name": "streak",
+              "value": "0",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        688,
+        0
+      ],
+      "id": "28cc8d69-0614-4970-b055-6012a1e9c6d5",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "jsCode": "const raw = $json.output;\nconst parsed = JSON.parse(raw);\n\nreturn [\n  {\n    json: {\n      sessionId: $node[\"When chat message received\"].json.sessionId,\n      ...parsed\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        512,
+        0
+      ],
+      "id": "567691eb-5ac4-4a82-b018-6d7d5b9dc5f9",
+      "name": "parse json"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "13_yiZVoKrS2xXeltA2yU1j-QXEebwyXMtgBfHtrKgC4",
+          "mode": "list",
+          "cachedResultName": "CareerMentorData",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/13_yiZVoKrS2xXeltA2yU1j-QXEebwyXMtgBfHtrKgC4/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/13_yiZVoKrS2xXeltA2yU1j-QXEebwyXMtgBfHtrKgC4/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "sessionId": "={{$json.sessionId}}",
+            "Date": "={{$now}}",
+            "field": "={{$json.field}}",
+            "milestone": "=\"\"",
+            "nextSkill": "={{$json.nextSkill}}",
+            "todayTask": "={{$json.todayTask}}",
+            "status": "pending",
+            "streak": "0"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "sessionId",
+              "displayName": "sessionId",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "field",
+              "displayName": "field",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "milestone",
+              "displayName": "milestone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "nextSkill",
+              "displayName": "nextSkill",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "todayTask",
+              "displayName": "todayTask",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "streak",
+              "displayName": "streak",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        912,
+        160
+      ],
+      "id": "5a70a108-dea4-46f2-a3d0-da941944da45",
+      "name": "Append row in sheet",
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "DtnCPp9qGEe9LCiT",
+          "name": "Google Sheets account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "d5bd23d3-186b-4df2-b6cc-4a253b7d8f3b",
+              "leftValue": "={{$json.chatInput}}",
+              "rightValue": "done",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            },
+            {
+              "id": "7074fcfc-94ad-4995-9f1a-73dcda3cdf80",
+              "leftValue": "{{$json.chatInput}}",
+              "rightValue": "completed",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            },
+            {
+              "id": "8097a65c-867c-413d-aba8-6347b9c65dcd",
+              "leftValue": "={{$json.chatInput}}",
+              "rightValue": "finished",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        16,
+        464
+      ],
+      "id": "a90d5f98-5b6d-46bd-b67a-857c5b84d55c",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "13_yiZVoKrS2xXeltA2yU1j-QXEebwyXMtgBfHtrKgC4",
+          "mode": "list",
+          "cachedResultName": "CareerMentorData",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/13_yiZVoKrS2xXeltA2yU1j-QXEebwyXMtgBfHtrKgC4/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/13_yiZVoKrS2xXeltA2yU1j-QXEebwyXMtgBfHtrKgC4/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        240,
+        448
+      ],
+      "id": "cb31b757-5a77-4742-ad86-2e38aaae6048",
+      "name": "Get row(s) in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "DtnCPp9qGEe9LCiT",
+          "name": "Google Sheets account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "return items.map(item => {\n\n  const rowNumber = item.json.row_number;\n  const currentStreak = parseInt(item.json.streak || 0);\n  const newStreak = currentStreak + 1;\n\n  return {\n    json: {\n      row_number: rowNumber,\n      status: \"done\",\n      streak: newStreak,\n      reply: `🔥 Streak updated! You're on day ${newStreak}!`\n    }\n  };\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        448,
+        448
+      ],
+      "id": "4b26f747-fc22-49fe-85de-946c45b1c085",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "13_yiZVoKrS2xXeltA2yU1j-QXEebwyXMtgBfHtrKgC4",
+          "mode": "list",
+          "cachedResultName": "CareerMentorData",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/13_yiZVoKrS2xXeltA2yU1j-QXEebwyXMtgBfHtrKgC4/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/13_yiZVoKrS2xXeltA2yU1j-QXEebwyXMtgBfHtrKgC4/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "streak": "={{$json.streak}}",
+            "status": "={{$json.status}}",
+            "row_number": "={{$json.row_number}}"
+          },
+          "matchingColumns": [
+            "row_number"
+          ],
+          "schema": [
+            {
+              "id": "sessionId",
+              "displayName": "sessionId",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "field",
+              "displayName": "field",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "milestone",
+              "displayName": "milestone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "nextSkill",
+              "displayName": "nextSkill",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "todayTask",
+              "displayName": "todayTask",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "streak",
+              "displayName": "streak",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        624,
+        448
+      ],
+      "id": "993eea9f-3851-424e-8bad-9ec6063efd8b",
+      "name": "Update row in sheet",
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "DtnCPp9qGEe9LCiT",
+          "name": "Google Sheets account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "return items.map(item => {\n  return {\n    json: {\n      reply: `🔥 Streak updated! You're on day ${item.json.streak}!`\n    }\n  };\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        832,
+        448
+      ],
+      "id": "90fa7352-9694-4221-a62e-85d29a2da89e",
+      "name": "Code in JavaScript1"
+    },
+    {
+      "parameters": {
+        "availableInChat": true,
+        "options": {
+          "responseMode": "streaming"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        -160,
+        16
+      ],
+      "id": "82dff251-243a-4806-bd0c-464fea041f11",
+      "name": "When chat message received",
+      "webhookId": "e1a45e37-11de-4dcb-a4ef-c5a5fed370eb"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{$json.reply}}",
+        "options": {
+          "systemMessage": "You are a helpful mentor. \nRespond only with the exact message provided.\nFor the message coming from Ai agent respond by thinking and respond properly like you are a human talking to another human.\nDo not modify it."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        1280,
+        64
+      ],
+      "id": "165168c4-99b4-43d5-98eb-ddb69231d5b8",
+      "name": "AI Agent1"
+    },
+    {
+      "parameters": {
+        "jsCode": "return items;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        864,
+        -112
+      ],
+      "id": "094c4c8f-1f81-4bad-a2f2-d299e6660ab8",
+      "name": "Code in JavaScript2"
+    },
+    {
+      "parameters": {
+        "model": "devstral-small-latest",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatMistralCloud",
+      "typeVersion": 1,
+      "position": [
+        1280,
+        240
+      ],
+      "id": "1623b149-f0c5-4b33-a3c3-127542697f96",
+      "name": "Mistral Cloud Chat Model1",
+      "credentials": {
+        "mistralCloudApi": {
+          "id": "SibT3x0Glg7daFid",
+          "name": "Mistral Cloud account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        1376,
+        384
+      ],
+      "id": "8cfa3307-103f-425d-a321-58e2a2744a2b",
+      "name": "Simple Memory1"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Mistral Cloud Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "parse json",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Code in JavaScript2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "parse json": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet": {
+      "main": [
+        []
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Update row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript1": {
+      "main": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript2": {
+      "main": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mistral Cloud Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory1": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "versionId": "8e0e3291-177d-405d-8206-7a7d7264fb36",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "d6d111e06f6c70dcbee8f137e131f902e7dab50d1a9cabae65618725983a96cf"
+  },
+  "id": "A8WVJyrhW6wyzC34djEI9",
+  "tags": []
+}
