@@ -1,44 +1,13 @@
-AI Workflow Automation using n8n
-Overview
+# AI Career Mentor Workflow Automation
 
-This project demonstrates an AI-powered automation workflow built using n8n.
+## Overview
+AI-powered automation built using n8n to process user input and generate structured career guidance using external AI APIs.
 
-Features
+## Tech Stack
+- n8n
+- OpenAI API
+- Webhooks
+- JSON
 
-Trigger-based workflow execution
-
-API integration
-
-AI response generation
-
-Automated data processing
-
-Tech Stack
-
-n8n
-
-OpenAI API
-
-Webhooks
-
-JSON data handling
-
-How It Works
-
-Workflow triggers on input
-
-Data is processed
-
-AI generates response
-
-Output is automated via configured node
-
-What I Learned
-
-API integration handling
-
-Workflow debugging
-
-Automation pipeline design
-
-JSON parsing and data structuring
+## Files
+- workflow.json → Exported n8n workflow configuration
